@@ -1,4 +1,3 @@
-from curses import raw
 from os import fdopen
 import serial
 import time
@@ -6,14 +5,16 @@ import csv
 
 
 csvlist = []
-mindatapoints = 2000
+mindatapoints = 2500
 
+# Set Serial and File Constants
 port = "/dev/cu.usbserial-0001" #serial port of Arduino
 baud = 115200 #board runs at 115200 baud
 fileName="data.csv" #name of the CSV file generated
 
+# Connect to Device
 ser = serial.Serial(port, baud)
-print("Connected to Arduino port:" + port)
+print("Connected to Device:" + port)
 
 file = open(fileName, "a")
 print("Created file")
@@ -24,10 +25,10 @@ userinput = input("is this an Impact?: ")
 
 if userinput == "t" or userinput == "y" or userinput == "yes":
     #impact = True
-    csvlist.append("Yes")
+    csvlist.append("True")
 else:
     #impact = False
-    csvlist.append("No")
+    csvlist.append("False")
 
 # Wait for Start
 input("Press Enter to start")
@@ -61,8 +62,10 @@ while time.time() < t_end:
 
 if points > mindatapoints:
     difference =  points - mindatapoints
-
+    
+    print("Removing {} extra data points from beginning".format(str(difference)))
     for i in range(difference):
+        
         csvlist.pop(1)
 
 
@@ -71,8 +74,9 @@ if points > mindatapoints:
         writer_object.writerow(csvlist)
         csvobject.close()
 
+
 elif points < mindatapoints:
-    print("Less than 3500 points collected. Trashing data...")
+    print("Only {} points collected. Trashing data...".format(str(points)))
     
 
     with open('wastedata.csv', 'a', newline='') as csvobject:

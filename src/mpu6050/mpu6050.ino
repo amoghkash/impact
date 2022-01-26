@@ -28,7 +28,7 @@ void setup(void) {
       
     }
   }
-  digitalWrite(green, HIGH); //Turn on initializer LED
+  //digitalWrite(green, HIGH); //Turn on initializer LED
   //Serial.println("MPU6050 Found!");
 
   mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
@@ -97,7 +97,7 @@ void setup(void) {
 
 void loop() {
   /* Get new sensor events with the readings */
-  digitalWrite(integrated, LOW);
+  //digitalWrite(integrated, LOW);
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
 
@@ -105,17 +105,17 @@ void loop() {
   float y = a.acceleration.y;
   float z = a.acceleration.z;
   /* Print out the values */
-  digitalWrite(integrated, HIGH);
-double vsum;
+  //digitalWrite(integrated, HIGH);
+  double vsum;
 
   vsum = (sqrt(sq(x)+sq(y)+sq(z)));
 
-  Serial.print(vsum);
+  Serial.print(vsum - 8.02);
 
-  if(vsum>40){
+  /*if(vsum>40){
     digitalWrite(blue, HIGH);
   }
-
+  */
   Serial.println("");
   
 
