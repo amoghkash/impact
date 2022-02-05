@@ -14,6 +14,11 @@
 #include "freertos/task.h"
 #include "esp_system.h"
 #include "esp_spi_flash.h"
+#include "driver/i2 c.h"
+
+
+// Define all I2C information for all chips on the board
+
 
 
 void app_main(void)
