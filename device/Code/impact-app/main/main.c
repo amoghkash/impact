@@ -8,6 +8,8 @@
 */
 
 #include <stdio.h>
+#include "argtable3/argtable3.h"
+#include "driver/i2c.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_system.h"
