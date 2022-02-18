@@ -22,7 +22,7 @@ void setup(void) {
 
   // Try to initialize!
   if (!mpu.begin()) {
-    //Serial.println("Failed to find MPU6050 chip");
+    Serial.println("Failed to find MPU6050 chip");
     while (1) {
       delay(10);
       
@@ -112,10 +112,10 @@ void loop() {
 
   Serial.print(vsum - 8.02);
 
-  /*if(vsum>40){
+  if(vsum>40){
     digitalWrite(blue, HIGH);
   }
-  */
+ 
   Serial.println("");
   
 
@@ -130,5 +130,4 @@ void loop() {
   Serial.println("");
 
    */
-  //delay(500);
 }

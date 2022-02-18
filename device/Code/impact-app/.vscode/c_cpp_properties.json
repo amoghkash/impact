@@ -6,11 +6,9 @@
             "cStandard": "c11",
             "cppStandard": "c++17",
             "includePath": [
-                "${config:idf.espIdfPath}/components/**",
-                "${config:idf.espIdfPathWin}/components/**",
-                "${config:idf.espAdfPath}/components/**",
-                "${config:idf.espAdfPathWin}/components/**",
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/Users/amoghkashyap/esp/esp-idf/**",
+                "/Users/amoghkashyap/esp/esp-idf/examples/common_components/protocol_examples_common/include/**"
             ],
             "browse": {
                 "path": [

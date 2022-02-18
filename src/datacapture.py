@@ -65,9 +65,7 @@ if points > mindatapoints:
     
     print("Removing {} extra data points from beginning".format(str(difference)))
     for i in range(difference):
-        
         csvlist.pop(1)
-
 
     with open('data.csv', 'a', newline='') as csvobject:
         writer_object = csv.writer(csvobject)
@@ -78,12 +76,11 @@ if points > mindatapoints:
 elif points < mindatapoints:
     print("Only {} points collected. Trashing data...".format(str(points)))
     
-
     with open('wastedata.csv', 'a', newline='') as csvobject:
         writer_object = csv.writer(csvobject)
         writer_object.writerow(csvlist)
         csvobject.close()
-            
+    
     print("Done.")
 
 
