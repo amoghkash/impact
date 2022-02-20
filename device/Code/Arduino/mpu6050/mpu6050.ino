@@ -119,7 +119,6 @@ void loop() {
   Serial.println("");
   
 
-  
   /*
    Serial.print("X:");
   Serial.print(x);
