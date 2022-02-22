@@ -1,27 +1,69 @@
+#include <WiFi.h>
+#include <WiFiUdp.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
-#include "WiFi.h"
-#include "AsyncUDP.h"
-#include "WifiUdp.h"
 
+
+
+/* WiFi network name and password */
+const char * ssid = "Magellanic";
+const char * pwd = "3014016951";
+
+// IP address to send UDP data to.
+// it can be ip address of the server or 
+// a network broadcast address
+// here is broadcast address
+const char * udpAddress = "192.168.1.154";
+const int udpPort = 3333;
+
+//create UDP instance
+WiFiUDP udp;
+// Create MPU instance
+Adafruit_MPU6050 mpu; 
+
+// Set LED Pin
 #define led 2 
 
-const char* ssid = "Magellanic";
-const char* pass = "3014016951";
 
-AsyncUDP udp;
-Adafruit_MPU6050 mpu;
-
-void setup(void) {
+void setup(){
   Serial.begin(115200);
-  // put your setup code here, to run once:
+
+  pinMode(led, OUTPUT); // Set LED as output
+
+  
+  //Connect to the WiFi network
+  WiFi.begin(ssid, pwd);
+  Serial.println("");
+
+  // Wait for connection
+  while (WiFi.status() != WL_CONNECTED) {
+    digitalWrite(led, HIGH);
+    delay(300);
+    Serial.print(".");
+    digitalWrite(led, LOW);
+    delay(100);
+  }
+  digitalWrite(led, LOW);
+  Serial.println("");
+  Serial.print("Connected to ");
+  Serial.println(ssid);
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+  delay(500);
+  digitalWrite(led, HIGH);
+
+  // Look for MPU Chip
   if (!mpu.begin()) {
     Serial.println("Failed to find MPU6050 chip");
     while (1) {
       delay(10);
     }
+  } else {
+    Serial.println("Chip Found");
   }
+  
+  // Set MPU Chip Sensitivity Values
   mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
   //Serial.print("Accelerometer range set to: ");
   switch (mpu.getAccelerometerRange()) {
@@ -39,7 +81,6 @@ void setup(void) {
     break;
   }
   mpu.setGyroRange(MPU6050_RANGE_500_DEG);
-  //Serial.print("Gyro range set to: ");
   switch (mpu.getGyroRange()) {
   case MPU6050_RANGE_250_DEG:
     //Serial.println("+- 250 deg/s");
@@ -54,9 +95,7 @@ void setup(void) {
     //Serial.println("+- 2000 deg/s");
     break;
   }
-
   mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
-  //Serial.print("Filter bandwidth set to: ");
   switch (mpu.getFilterBandwidth()) {
   case MPU6050_BAND_260_HZ:
     //Serial.println("260 Hz");
@@ -80,65 +119,79 @@ void setup(void) {
     //Serial.println("5 Hz");
     break;
   }
-
-  
-  
-  pinMode(led, OUTPUT);
-  WiFi.disconnect(true);
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, pass);
-  while (WiFi.status() != WL_CONNECTED) {
-    digitalWrite(led, LOW);
-    delay(500);
-    Serial.print(".");
-    digitalWrite(led, HIGH);
-    delay(100);
-  }
-  
-  if(udp.listen(4000)) {
-    Serial.println("UDP Listening on IP: ");
-    Serial.print(WiFi.localIP());
-    digitalWrite(led, HIGH);
-    udp.onPacket([](AsyncUDPPacket packet) {
-      Serial.print("UDP Packet Type: ");
-      Serial.print(packet.isBroadcast() ? "Broadcast" : packet.isMulticast() ? "Multicast" : "Unicast");
-      Serial.print(", From: ");
-      Serial.print(packet.remoteIP());
-      Serial.print(":");
-      Serial.print(packet.remotePort());
-      Serial.print(", To: ");
-      Serial.print(packet.localIP());
-      Serial.print(":");
-      Serial.print(packet.localPort());
-      Serial.print(", Length: ");
-      Serial.print(packet.length()); //dlzka packetu
-      Serial.print(", Data: ");
-      Serial.write(packet.data(), packet.length());
-      Serial.println();
-      int x = 1;
-      int vsum;
-      char uid[10];
-      while(x == 1) {
-          digitalWrite(led, LOW);
-          sensors_event_t a, g, temp;
-          mpu.getEvent(&a, &g, &temp);
-          float x = a.acceleration.x;
-          float y = a.acceleration.y;
-          float z = a.acceleration.z;
-          vsum = (sqrt(sq(x)+sq(y)+sq(z))) - 8.02;
-          packet.length() = vsum
-          packet.printf(packet.length());
-          digitalWrite(led, HIGH);
-        }
-      packet.printf("Got %u bytes of data", packet.length());
-    });
-  }
-}
-  }
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-  delay(1000);
-  udp.broadcast("Anyone here?");
+
+void loop(){
+  
+  // Get Data from MPU6050 Sensor
+  sensors_event_t a, g, temp;
+  mpu.getEvent(&a, &g, &temp);
+
+  // Set Data from Sensor to variables
+  float rawx = a.acceleration.x;
+  float rawy = a.acceleration.y;
+  float rawz = a.acceleration.z;
+
+  // Convert floats into ints
+  int x = rawx * 100;
+  int y = rawy * 100;
+  int z = rawz * 100;
+
+  // Create char variables to hold sent values
+  char xval[10];
+  char yval[10];
+  char zval[10];
+
+  // Save integer data as ASCII Character into char variable
+  itoa(x, xval, 10);
+  itoa(y, yval, 10);
+  itoa(z, zval, 10);
+  
+  /*
+  // Print Values for Error Checking
+  Serial.println(xval);
+  Serial.println(yval);
+  Serial.println(zval);
+  */
+  
+  //Buffer Data to seperate values
+  uint8_t buffer[1] = {};
+  
+
+  //This initializes udp and transfer buffer
+  udp.beginPacket(udpAddress, udpPort);
+  udp.write(buffer,1);
+  int i = 0;
+  while (xval[i] != 0) {
+    //udp.write(buffer, 11);
+    udp.write((uint8_t)xval[i++]);
+  }
+  udp.write(buffer,1);
+  i = 0;
+  while (yval[i] != 0) {
+    udp.write((uint8_t)yval[i++]);
+  }
+  udp.write(buffer,1);
+  i = 0;
+  while (zval[i] != 0) {
+    udp.write((uint8_t)zval[i++]);
+  }
+  //udp.write(buffer, 11);
+  udp.endPacket();
+  memset(buffer, 0, 50);
+  //processing incoming packet, must be called before reading the buffer
+  udp.parsePacket();
+  //receive response from server, it will be HELLO WORLD
+  if(udp.read(buffer, 50) > 0){
+    Serial.print("Server to client: ");
+    Serial.println((char *)buffer);
+  }
+  //Wait for 1 second
+  delay(1);
 }
+
+
+
+
+
