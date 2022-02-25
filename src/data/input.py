@@ -1,4 +1,5 @@
 import socket
+import time
 
 # Declare Constant Variables
 HOST = '0.0.0.0' 
@@ -17,6 +18,6 @@ def getdata():
         strdata = strdata[6:-1]
         accelerationvalues = strdata.replace("\\x00",",")
         accelerationlist = list(accelerationvalues.split(","))
-        return(accelerationlist)
+        return(accelerationlist) # Return
 
 

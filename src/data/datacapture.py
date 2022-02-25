@@ -3,6 +3,7 @@ import serial
 import time
 import csv
 
+# Data through serial
 
 csvlist = []
 mindatapoints = 2500
