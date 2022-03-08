@@ -3,7 +3,7 @@ import variable.const as constant
 
 
 def log(data, file):
-    file = constant.basedir + "/data/collection/" + file
+    file = constant.basedir + "/data/collection/data.csv"
     
     with open(file, 'a', newline='') as csvwriter:
         csv = writer(csvwriter)

@@ -2,7 +2,7 @@ import data.input as input
 import data.processing as processing
 import logger.logger as logger
 import time
-import visualizer.plot as visualizer
+#import plot as visualizer
 import variable.const as constant
 
 starttime = time.time()

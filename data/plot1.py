@@ -1,4 +1,3 @@
-from unicodedata import decimal
 import matplotlib.pyplot as plt
 import csv
 
@@ -8,9 +7,9 @@ xz = []
 mag = []
 y=[]
 
-with open('data4.csv') as file:
+with open('data.csv') as file:
     next(file)
-    x =10
+    x =0
     lines = csv.reader(file, delimiter=',')
     for row in lines:
        #if x==10:
@@ -20,9 +19,9 @@ with open('data4.csv') as file:
         mag.append(float(row[3]))
         time = float(row[4])
         time = round(time, 2)
-        y.append(time)
+        y.append(x)
         #x=0
-        #x = x +1
+        x = x +1
 
 
 #plt.plot(y, xx, label = "Acc X")
