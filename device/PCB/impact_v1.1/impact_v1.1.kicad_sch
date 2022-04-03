@@ -8,6 +8,10 @@
     (title "MITS System")
     (date "2022-01-30")
     (rev "Version 1.1")
+    (company "Amogh Kashyap")
+    (comment 2 "Not for Commercial or Monetary Use")
+    (comment 3 "For Use with Proprietary Software")
+    (comment 4 "Property of Amogh Kashyap")
   )
 
   (lib_symbols

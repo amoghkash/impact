@@ -1539,9 +1539,6 @@
   )
 
   (gr_rect (start 135.89 76.2) (end 168.8568 105.41) (layer "Edge.Cuts") (width 0.1) (fill none) (tstamp d24c5b62-dd66-4419-a25d-c3a4639db399))
-  (gr_text "JLCJLCJLCJLC" (at 164.592 77.724) (layer "B.SilkS") (tstamp 052acc87-8ff9-4162-8f55-f7121d221d0a)
-    (effects (font (size 0.9 0.7) (thickness 0.175)) (justify mirror))
-  )
   (gr_text "Property of Amogh Kashyap" (at 151.8 104.1) (layer "B.SilkS") (tstamp 39611c83-8399-46f9-aa3c-33df63f431ea)
     (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
   )

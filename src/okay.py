@@ -1,2 +1,0 @@
-import AppKit
-AppKit.NSBeep()
